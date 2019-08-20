@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Starts a Postgres REPL according to the connection parameters in the
+# ".env.properties" file. To use ".env.properties" from a different folder,
+# specify that folder as the environment variable "CONF". Examples:
+#
+#     ./misc/pg_repl
+#
+#     CONF=conf/prod ./misc/pg_repl
+
+. ${CONF:-.}/.env.properties &&
+
+PGPASSWORD=${POSTGRES_PASSWORD}                                    \
+PGOPTIONS="-c search_path=${POSTGRES_SEARCH_PATH} -c timezone=UTC" \
+psql                                                               \
+  -h ${POSTGRES_DB_HOST}                                           \
+  -p ${POSTGRES_DB_PORT:-5432}                                     \
+  -U ${POSTGRES_USER}                                              \
+  -d ${POSTGRES_DB_NAME}                                           \
+  $@

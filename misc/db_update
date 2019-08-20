@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Usage:
+#
+# Test and rollback:
+#
+#     ./misc/db_update -r
+#
+# Actually update:
+#
+#     ./misc/db_update
+
+ROLLBACK=false
+
+while getopts ':r' opt
+do
+  case $opt in
+    (r) ROLLBACK=true
+  esac
+done
+
+if [ $ROLLBACK = "true" ]
+then
+  echo ';rollback;' | ./misc/pg_script -f sql/db_update.pgsql -f -
+else
+  ./misc/pg_script -f sql/db_update.pgsql
+fi

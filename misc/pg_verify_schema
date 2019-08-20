@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Usage:
+#     ./misc/pg_verify_schema
+
+echo ';rollback;' | cat sql/schema_stable.pgsql - | ./misc/pg_script

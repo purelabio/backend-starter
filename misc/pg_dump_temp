@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Dumps the database into a temporary file.
+#
+# Backup:
+#     ./misc/pg_dump_temp
+#
+# Restore:
+#     ./misc/pg_script -f <temp_file_name>
+
+dump_file_name=$(mktemp)                                    &&
+mv "$dump_file_name" "$dump_file_name.pgsql"                &&
+dump_file_name="$dump_file_name.pgsql"                      &&
+./misc/pg_dump > "$dump_file_name"                           &&
+echo "stored backup of current database in $dump_file_name"

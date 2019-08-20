@@ -1,0 +1,29 @@
+# This file should be non-executable to reduce the chance of accidentally
+# destroying a database.
+#
+# Usage:
+#
+#     sh misc/pg_reset_db
+
+. ${CONF:-.}/.env.properties &&
+
+if [ -z "${POSTGRES_DB_NAME}" ]
+then
+  echo "error: missing POSTGRES_DB_NAME" >> /dev/stderr
+  exit 1
+fi &&
+
+PGPASSWORD=${POSTGRES_PASSWORD} \
+psql \
+  -X \
+  -q \
+  -v ON_ERROR_STOP=1 \
+  --pset pager=off \
+  -h ${POSTGRES_DB_HOST} \
+  -p ${POSTGRES_DB_PORT:-5432} \
+  -U ${POSTGRES_USER} \
+  -d postgres \
+  $@ <<EOF
+drop database if exists ${POSTGRES_DB_NAME};
+create database ${POSTGRES_DB_NAME};
+EOF

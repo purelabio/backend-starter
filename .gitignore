@@ -1,0 +1,13 @@
+# Blacklist -> whitelist -> blacklist -> ... -> ...
+
+/*
+!/go
+!/*.example
+!/.gitignore
+!/cmd
+!/Dockerfile
+!/go.mod
+!/go.sum
+!/readme.md
+!/misc
+!/sql

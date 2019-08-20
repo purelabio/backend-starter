@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Runs an SQL file in Postgres, according to the connection parameters in the
+# ".env.properties" file. To use ".env.properties" from a different folder,
+# specify that folder as the environment variable "CONF". Examples:
+#
+#     ./misc/pg_script -f file.pgsql
+#
+#     CONF=conf/prod ./misc/pg_script -f file.pgsql
+#
+# Without `-f`, it reads SQL code from standard input:
+#
+#     cat file.pgsql | ./misc/pg_script
+
+. ${CONF:-.}/.env.properties &&
+
+if [ -z "${POSTGRES_DB_NAME}" ]
+then
+  echo "error: missing POSTGRES_DB_NAME" >> /dev/stderr
+  exit 1
+fi &&
+
+PGPASSWORD=${POSTGRES_PASSWORD} \
+PGOPTIONS="-c client_min_messages=warning -c search_path=${POSTGRES_SEARCH_PATH} -c timezone=UTC" \
+psql \
+  -X \
+  -q \
+  -1 \
+  -v ON_ERROR_STOP=1 \
+  --pset pager=off \
+  -h ${POSTGRES_DB_HOST} \
+  -p ${POSTGRES_DB_PORT:-5432} \
+  -U ${POSTGRES_USER} \
+  -d ${POSTGRES_DB_NAME} \
+  $@

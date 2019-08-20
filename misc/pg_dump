@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Backup:
+#     ./misc/pg_dump > dump.pgsql
+#
+# Restore:
+#     ./misc/pg_script -f dump.pgsql
+
+. ${CONF:-.}/.env.properties &&
+
+PGPASSWORD=${POSTGRES_PASSWORD} pg_dump \
+  --clean \
+  --if-exists \
+  --no-owner \
+  --no-acl \
+  -h ${POSTGRES_DB_HOST} \
+  -p ${POSTGRES_DB_PORT:-5432} \
+  -U ${POSTGRES_USER} \
+  ${POSTGRES_DB_NAME} \
+  $@

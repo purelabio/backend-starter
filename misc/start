@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Used by `Dockerfile`.
+
+touch .env.properties &&
+./misc/db_update &&
+./main
